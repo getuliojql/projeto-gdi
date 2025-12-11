@@ -1,5 +1,5 @@
 --Group by/Having
-SELECT Id_Cliente, COUNT(Id_Pedido)
+SELECT Id_Cliente
 FROM FazPedido
 GROUP BY Id_Cliente
 HAVING COUNT(Id_Pedido) > 3

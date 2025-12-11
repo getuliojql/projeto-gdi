@@ -63,9 +63,37 @@ WHERE (Id_Prod, quantidade) = (
 
 
 --Subconsulta do tipo tabela
+SELECT Nome
+FROM Funcionario
+WHERE CPF_Func IN (
+    SELECT CPF_Supervisor
+    FROM Funcionario
+    WHERE CPF_Supervisor IS NOT NULL
+)
+-- mostra o nome dos funcionários que são supervisores
 
 
 --Operação de conjunto
+SELECT Nome FROM PF
+UNION
+SELECT Nome FROM Funcionario
+-- exibe uma lista única com o nome de todos os clientes e funcionários, unindo os dois conjuntos
 
 
---01 procedimento com SQL embutida e parâmetro, função com SQL embutida e parâmetro ou gatilho.
+--01 procedimento com SQL embutida e parâmetro, função com SQL embutida e parâmetro ou gatilho
+CREATE OR REPLACE FUNCTION Calcular_Total_Itens(p_id_pedido IN NUMBER) RETURN NUMBER IS
+    v_total NUMBER(10,2);
+BEGIN
+    -- Seleciona a soma do valor dos itens para o pedido informado
+    SELECT SUM(quantidade * valor_unitario)
+    INTO v_total
+    FROM Item_Pedido
+    WHERE Id_Pedido = p_id_pedido;
+
+    RETURN v_total;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        RETURN 0;
+END;
+/
+-- recebe o ID de um pedido como parâmetro e retorna o valor total, calculado somando os itens
